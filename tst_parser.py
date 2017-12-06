@@ -2,6 +2,9 @@ from collections import defaultdict
 from xml.etree import cElementTree as ET
 from pprint import pprint
 
+# usage : locate at the folder with (TC/*, EFG.xml, GUI.xml)
+# and run : "python3 tst_parser.py"
+
 def etree_to_dict(t):
     d = {t.tag: {} if t.attrib else None}
     children = list(t)
