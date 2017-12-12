@@ -1,4 +1,5 @@
 import random
+
 from parseXML import XMLParser
 
 # Ant class
@@ -41,7 +42,7 @@ class Graph:
 			seq.append(random.choice(ables))# randomly choose among them
 		return seq
 
-# rho-based pseudo random propotional rule
+# rho-based pseudo random proportional rule
 def selectAction(node, g, p, rho):
 	pheInfo = []
 	ables = ableIdx(g.adjMatrix[node])
@@ -55,7 +56,7 @@ def selectAction(node, g, p, rho):
 	pheInfo.sort(key = keyFun)# sort pheInfo according to keyFunction
 
 	if random.random() <= rho:# if in possibility rho
-		return pheInfo[0][0]# get most-pheromoned index
+		return pheInfo[0][0]# get index with maximum pheromone
 	else:
 		return random.choice(ables)# get random index
 
@@ -106,7 +107,7 @@ class Pheromone:
 				newPhe = 0
 				if newPhes[i][j][1] > 0:# if edge(i, j) was related to ants
 					newPhe = newPhes[i][j][0] / newPhes[i][j][1]
-					# added pheromone is 'average of fitnesses'
+					# added pheromone is 'average of fitness values'
 				self.adjMatrix[i][j] = (1 - self.alpha) * self.adjMatrix[i][j] + self.alpha * newPhe
 				# pheromone is also evaporated
 				# and added with the new value
@@ -138,6 +139,9 @@ def ACORun(antSize, generation, seqLength, initP, rho, alpha, EFGfile):
 		antList[i] = Ant(g.getRandomSeq(seqLength))
 		antList[i].calcFitness(g)
 
+	# best sequence
+	bestSeq = (None, -1)
+
 	for i in range(generation):
 		print("Generation:", i+1, "start")
 
@@ -147,4 +151,8 @@ def ACORun(antSize, generation, seqLength, initP, rho, alpha, EFGfile):
 			
 		p.update(antList)
 
-	return getBestSeq(antList)
+		candSeq = getBestSeq(antList)
+		if candSeq[1] > bestSeq[1]:
+			bestSeq = candSeq
+
+	return bestSeq
