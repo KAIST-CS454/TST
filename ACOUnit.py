@@ -142,8 +142,10 @@ def ACORun(antSize, generation, seqLength, initP, rho, alpha, EFGfile):
 	# best sequence
 	bestSeq = (None, -1)
 
+	file = open("ACO.csv","w")
+
 	for i in range(generation):
-		print("Generation:", i+1, "start")
+		#print("Generation:", i+1, "start")
 
 		for j in range(antSize):
 			antList[j].traverse(g, p, seqLength, rho)
@@ -152,7 +154,34 @@ def ACORun(antSize, generation, seqLength, initP, rho, alpha, EFGfile):
 		p.update(antList)
 
 		candSeq = getBestSeq(antList)
+		file.write("%d\n"%(candSeq[1]))
+		#print(s)
 		if candSeq[1] > bestSeq[1]:
 			bestSeq = candSeq
 
+	file.close()
+
 	return bestSeq
+
+def RandomRun(generation, seqLength, EFGfile):
+	parser = XMLParser(EFGfile)
+
+	event_graph = parser.parse_event_graph()
+	initial = parser.parse_event_initial()
+
+	n = len(event_graph)
+	g = Graph(n, event_graph, initial)
+
+	file = open("Random.csv", "w")
+
+	for i in range(generation):
+		ant = Ant(g.getRandomSeq(seqLength))
+		ant.calcFitness(g)
+
+		file.write("%d\n"%(ant.fitness))
+		#print(s)
+
+	file.close()
+
+	return
+
